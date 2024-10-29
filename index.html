@@ -1,369 +1,544 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Flag Quiz</title>
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Bungee&display=swap');
-
-        body {
-            font-family: 'Bungee', cursive;
-            text-align: center;
-            background-color: #f0f0f0;
-            color: #333;
-        }
-        .country {
-            margin: 20px;
-        }
-        img {
-            width: 200px; /* Adjust size as needed */
-            height: auto;
-        }
-        .options {
-            display: flex;
-            justify-content: center;
-            margin-top: 20px;
-        }
-        button {
-            margin: 0 10px;
-            padding: 10px 20px;
-            font-size: 16px;
-            cursor: pointer;
-        }
-        #feedback {
-            font-weight: bold;
-            margin-top: 10px;
-        }
-        #highScore {
-            margin-top: 20px;
-            font-size: 20px;
-            font-weight: bold;
-        }
-        #claimPrize {
-            display: none;
-            margin-top: 20px;
-            font-size: 20px;
-            font-weight: bold;
-            color: green;
-        }
-        .correct {
-            background-color: lightgreen;
-        }
-        .incorrect {
-            background-color: lightcoral;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FLAG QUIZ!</title>
+  <link href="https://fonts.googleapis.com/css2?family=Bungee&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Bungee', cursive;
+      text-align: center;
+      background-color: #e0f7fa;
+      color: #004d40;
+    }
+    #welcome-container {
+      margin-top: 100px;
+    }
+    .mode-button {
+      display: block;
+      margin: 20px auto;
+      padding: 20px;
+      width: 250px;
+      font-size: 20px;
+      cursor: pointer;
+      background-color: #ffffff;
+      border: 2px solid #004d40;
+      border-radius: 10px;
+      transition: background-color 0.3s, color 0.3s;
+      font-family: 'Bungee', cursive;
+    }
+    .mode-button:hover {
+      background-color: #b2dfdb;
+    }
+    #quiz-container {
+      position: relative;
+      margin-top: 50px;
+      padding: 20px;
+      background-color: #ffffff;
+      border-radius: 15px;
+      box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.2);
+      display: inline-block;
+      transition: box-shadow 0.5s ease;
+    }
+    .flag-img {
+      width: 300px;
+      height: 200px;
+      border: 2px solid #004d40;
+      border-radius: 10px;
+      margin-bottom: 20px;
+    }
+    .option-button {
+      display: block;
+      margin: 10px auto;
+      padding: 15px;
+      width: 250px;
+      font-size: 18px;
+      cursor: pointer;
+      background-color: #ffffff;
+      border: 2px solid #004d40;
+      border-radius: 10px;
+      transition: background-color 0.3s, color 0.3s;
+      font-family: 'Bungee', cursive;
+      white-space: normal;
+      word-wrap: break-word;
+    }
+    .option-button.correct {
+      background-color: #4CAF50;
+      color: #ffffff;
+    }
+    .option-button.incorrect {
+      background-color: #f44336;
+      color: #ffffff;
+    }
+    #reset-button, #claim-prize-button, #play-again-button, #switch-mode-button {
+      display: none;
+      margin: 20px auto;
+      padding: 15px;
+      font-size: 18px;
+      cursor: pointer;
+      background-color: #ffffff;
+      border: 2px solid #004d40;
+      border-radius: 10px;
+      transition: background-color 0.3s, color 0.3s;
+      font-family: 'Bungee', cursive;
+    }
+    #hint-button, #home-button {
+      margin: 10px;
+      padding: 5px;
+      font-size: 14px;
+      cursor: pointer;
+      background-color: #ffffff;
+      border: 2px solid #004d40;
+      border-radius: 5px;
+      transition: background-color 0.3s, color 0.3s;
+      font-family: 'Bungee', cursive;
+      display: inline-block;
+    }
+    #hi-score {
+      font-size: 18px;
+      font-family: 'Bungee', cursive;
+      margin-bottom: 10px;
+    }
+    #progress-bar-container {
+      position: relative;
+      width: 100%;
+      background-color: #ccc;
+      border-radius: 15px;
+      margin-top: 20px;
+      height: 20px;
+      overflow: hidden;
+    }
+    #progress-bar {
+      width: 0%;
+      height: 100%;
+      background-color: #4CAF50;
+      border-radius: 15px;
+      transition: width 0.5s;
+    }
+    @keyframes pulseRed {
+      0% { box-shadow: 0 0 15px rgba(244, 67, 54, 0.2); }
+      50% { box-shadow: 0 0 30px rgba(244, 67, 54, 0.5); }
+      100% { box-shadow: 0 0 15px rgba(244, 67, 54, 0.2); }
+    }
+  </style>
 </head>
 <body>
-    <h1>Guess the Country Flag!</h1>
-    <div class="country">
-        <img id="flagImage" src="" alt="Flag" />
-        <div id="feedback"></div>
+  <div id="welcome-container">
+    <h1>FLAG QUIZ!</h1>
+    <button class="mode-button" onclick="startEasyMode()">EASY MODE</button>
+    <button class="mode-button" onclick="startHardMode()">HARD MODE</button>
+  </div>
+  <div id="quiz-container" style="display: none;">
+    <img id="flag" class="flag-img" alt="Country Flag">
+    <div id="options-container">
+      <button class="option-button" onclick="checkAnswer(0)"></button>
+      <button class="option-button" onclick="checkAnswer(1)"></button>
+      <button class="option-button" onclick="checkAnswer(2)"></button>
     </div>
-    <div class="options">
-        <button onclick="checkAnswer(0)"></button>
-        <button onclick="checkAnswer(1)"></button>
-        <button onclick="checkAnswer(2)"></button>
+    <button id="reset-button" onclick="resetGame()">Reset</button>
+    <button id="claim-prize-button" onclick="claimPrize()">Claim Prize</button>
+    <button id="play-again-button" onclick="playAgain()">Play Again</button>
+    <button id="switch-mode-button" onclick="switchToHardMode()">Switch to Hard Mode</button>
+    <div style="display: flex; justify-content: center; align-items: center; margin-top: 10px;">
+      <button id="hint-button" onclick="useHint()">Hints: <span id="hints-remaining">5</span>/5</button>
+      <button id="home-button" onclick="goHome()">Home</button>
     </div>
-    <h2>Score: <span id="score">0</span></h2>
-    <div id="highScore">High Score: <span id="highScoreValue">0</span></div>
-    <div id="claimPrize">You've guessed 197 flags! <a href="https://www.youtube.com/watch?v=dQw4w9WgXcQ" target="_blank">Claim Prize!</a></div>
-    <button id="resetButton" onclick="resetGame()" style="display:none;">Reset</button>
+    <div id="counter">0/197</div>
+    <div id="hi-score">Hi-Score: <span id="high-score">0</span></div>
+    <div id="progress-bar-container">
+      <div id="progress-bar"></div>
+    </div>
+  </div>
+  <script>
+    const countries = [
+      { name: "Dominica", flagUrl: "https://flagcdn.com/w320/dm.png" },
+      { name: "Bolivia", flagUrl: "https://flagcdn.com/w320/bo.png" },
+      { name: "Papua New Guinea", flagUrl: "https://flagcdn.com/w320/pg.png" },
+      { name: "Jordan", flagUrl: "https://flagcdn.com/w320/jo.png" },
+      { name: "Zimbabwe", flagUrl: "https://flagcdn.com/w320/zw.png" },
+      { name: "Costa Rica", flagUrl: "https://flagcdn.com/w320/cr.png" },
+      { name: "Honduras", flagUrl: "https://flagcdn.com/w320/hn.png" },
+      { name: "Guatemala", flagUrl: "https://flagcdn.com/w320/gt.png" },
+      { name: "Luxembourg", flagUrl: "https://flagcdn.com/w320/lu.png" },
+      { name: "Cameroon", flagUrl: "https://flagcdn.com/w320/cm.png" },
+      { name: "Cuba", flagUrl: "https://flagcdn.com/w320/cu.png" },
+      { name: "Timor-Leste", flagUrl: "https://flagcdn.com/w320/tl.png" },
+      { name: "Morocco", flagUrl: "https://flagcdn.com/w320/ma.png" },
+      { name: "Nauru", flagUrl: "https://flagcdn.com/w320/nr.png" },
+      { name: "Uzbekistan", flagUrl: "https://flagcdn.com/w320/uz.png" },
+      { name: "Italy", flagUrl: "https://flagcdn.com/w320/it.png" },
+      { name: "Iran", flagUrl: "https://flagcdn.com/w320/ir.png" },
+      { name: "Thailand", flagUrl: "https://flagcdn.com/w320/th.png" },
+      { name: "Chile", flagUrl: "https://flagcdn.com/w320/cl.png" },
+      { name: "Iceland", flagUrl: "https://flagcdn.com/w320/is.png" },
+      { name: "Malawi", flagUrl: "https://flagcdn.com/w320/mw.png" },
+      { name: "Cambodia", flagUrl: "https://flagcdn.com/w320/kh.png" },
+      { name: "Liberia", flagUrl: "https://flagcdn.com/w320/lr.png" },
+      { name: "Trinidad and Tobago", flagUrl: "https://flagcdn.com/w320/tt.png" },
+      { name: "India", flagUrl: "https://flagcdn.com/w320/in.png" },
+      { name: "Portugal", flagUrl: "https://flagcdn.com/w320/pt.png" },
+      { name: "Kuwait", flagUrl: "https://flagcdn.com/w320/kw.png" },
+      { name: "Panama", flagUrl: "https://flagcdn.com/w320/pa.png" },
+      { name: "Mongolia", flagUrl: "https://flagcdn.com/w320/mn.png" },
+      { name: "Ecuador", flagUrl: "https://flagcdn.com/w320/ec.png" },
+      { name: "Venezuela", flagUrl: "https://flagcdn.com/w320/ve.png" },
+      { name: "Peru", flagUrl: "https://flagcdn.com/w320/pe.png" },
+      { name: "Kiribati", flagUrl: "https://flagcdn.com/w320/ki.png" },
+      { name: "United Arab Emirates", flagUrl: "https://flagcdn.com/w320/ae.png" },
+      { name: "Côte d’Ivoire", flagUrl: "https://flagcdn.com/w320/ci.png" },
+      { name: "Samoa", flagUrl: "https://flagcdn.com/w320/ws.png" },
+      { name: "Spain", flagUrl: "https://flagcdn.com/w320/es.png" },
+      { name: "Ethiopia", flagUrl: "https://flagcdn.com/w320/et.png" },
+      { name: "Kyrgyzstan", flagUrl: "https://flagcdn.com/w320/kg.png" },
+      { name: "Kazakhstan", flagUrl: "https://flagcdn.com/w320/kz.png" },
+      { name: "Qatar", flagUrl: "https://flagcdn.com/w320/qa.png" },
+      { name: "Canada", flagUrl: "https://flagcdn.com/w320/ca.png" },
+      { name: "Belarus", flagUrl: "https://flagcdn.com/w320/by.png" },
+      { name: "Bulgaria", flagUrl: "https://flagcdn.com/w320/bg.png" },
+      { name: "Albania", flagUrl: "https://flagcdn.com/w320/al.png" },
+      { name: "Solomon Islands", flagUrl: "https://flagcdn.com/w320/sb.png" },
+      { name: "Armenia", flagUrl: "https://flagcdn.com/w320/am.png" },
+      { name: "Saint Lucia", flagUrl: "https://flagcdn.com/w320/lc.png" },
+      { name: "Tajikistan", flagUrl: "https://flagcdn.com/w320/tj.png" },
+      { name: "Oman", flagUrl: "https://flagcdn.com/w320/om.png" },
+      { name: "Republic of the Congo", flagUrl: "https://flagcdn.com/w320/cg.png" },
+      { name: "Moldova", flagUrl: "https://flagcdn.com/w320/md.png" },
+      { name: "Sierra Leone", flagUrl: "https://flagcdn.com/w320/sl.png" },
+      { name: "Saudi Arabia", flagUrl: "https://flagcdn.com/w320/sa.png" },
+      { name: "Bosnia and Herzegovina", flagUrl: "https://flagcdn.com/w320/ba.png" },
+      { name: "Bhutan", flagUrl: "https://flagcdn.com/w320/bt.png" },
+      { name: "Tunisia", flagUrl: "https://flagcdn.com/w320/tn.png" },
+      { name: "Slovenia", flagUrl: "https://flagcdn.com/w320/si.png" },
+      { name: "France", flagUrl: "https://flagcdn.com/w320/fr.png" },
+      { name: "Argentina", flagUrl: "https://flagcdn.com/w320/ar.png" },
+      { name: "Bahrain", flagUrl: "https://flagcdn.com/w320/bh.png" },
+      { name: "Mexico", flagUrl: "https://flagcdn.com/w320/mx.png" },
+      { name: "Saint Vincent and the Grenadines", flagUrl: "https://flagcdn.com/w320/vc.png" },
+      { name: "Vanuatu", flagUrl: "https://flagcdn.com/w320/vu.png" },
+      { name: "New Zealand", flagUrl: "https://flagcdn.com/w320/nz.png" },
+      { name: "Equatorial Guinea", flagUrl: "https://flagcdn.com/w320/gq.png" },
+      { name: "Belgium", flagUrl: "https://flagcdn.com/w320/be.png" },
+      { name: "Australia", flagUrl: "https://flagcdn.com/w320/au.png" },
+      { name: "Brazil", flagUrl: "https://flagcdn.com/w320/br.png" },
+      { name: "Latvia", flagUrl: "https://flagcdn.com/w320/lv.png" },
+      { name: "Netherlands", flagUrl: "https://flagcdn.com/w320/nl.png" },
+      { name: "Maldives", flagUrl: "https://flagcdn.com/w320/mv.png" },
+      { name: "Serbia", flagUrl: "https://flagcdn.com/w320/rs.png" },
+      { name: "Kenya", flagUrl: "https://flagcdn.com/w320/ke.png" },
+      { name: "Austria", flagUrl: "https://flagcdn.com/w320/at.png" },
+      { name: "Sri Lanka", flagUrl: "https://flagcdn.com/w320/lk.png" },
+      { name: "Mozambique", flagUrl: "https://flagcdn.com/w320/mz.png" },
+      { name: "Türkiye", flagUrl: "https://flagcdn.com/w320/tr.png" },
+      { name: "Japan", flagUrl: "https://flagcdn.com/w320/jp.png" },
+      { name: "Lebanon", flagUrl: "https://flagcdn.com/w320/lb.png" },
+      { name: "Colombia", flagUrl: "https://flagcdn.com/w320/co.png" },
+      { name: "Fiji", flagUrl: "https://flagcdn.com/w320/fj.png" },
+      { name: "Barbados", flagUrl: "https://flagcdn.com/w320/bb.png" },
+      { name: "Nicaragua", flagUrl: "https://flagcdn.com/w320/ni.png" },
+      { name: "Angola", flagUrl: "https://flagcdn.com/w320/ao.png" },
+      { name: "Sweden", flagUrl: "https://flagcdn.com/w320/se.png" },
+      { name: "Uruguay", flagUrl: "https://flagcdn.com/w320/uy.png" },
+      { name: "Somalia", flagUrl: "https://flagcdn.com/w320/so.png" },
+      { name: "Eswatini", flagUrl: "https://flagcdn.com/w320/sz.png" },
+      { name: "Burkina Faso", flagUrl: "https://flagcdn.com/w320/bf.png" },
+      { name: "The Gambia", flagUrl: "https://flagcdn.com/w320/gm.png" },
+      { name: "Taiwan", flagUrl: "https://flagcdn.com/w320/tw.png" },
+      { name: "Tuvalu", flagUrl: "https://flagcdn.com/w320/tv.png" },
+      { name: "Malta", flagUrl: "https://flagcdn.com/w320/mt.png" },
+      { name: "Poland", flagUrl: "https://flagcdn.com/w320/pl.png" },
+      { name: "South Africa", flagUrl: "https://flagcdn.com/w320/za.png" },
+      { name: "United Kingdom", flagUrl: "https://flagcdn.com/w320/gb.png" },
+      { name: "São Tomé and Príncipe", flagUrl: "https://flagcdn.com/w320/st.png" },
+      { name: "Indonesia", flagUrl: "https://flagcdn.com/w320/id.png" },
+      { name: "Vatican City", flagUrl: "https://flagcdn.com/w320/va.png" },
+      { name: "North Macedonia", flagUrl: "https://flagcdn.com/w320/mk.png" },
+      { name: "Saint Kitts and Nevis", flagUrl: "https://flagcdn.com/w320/kn.png" },
+      { name: "El Salvador", flagUrl: "https://flagcdn.com/w320/sv.png" },
+      { name: "Namibia", flagUrl: "https://flagcdn.com/w320/na.png" },
+      { name: "Czechia", flagUrl: "https://flagcdn.com/w320/cz.png" },
+      { name: "Grenada", flagUrl: "https://flagcdn.com/w320/gd.png" },
+      { name: "Guinea", flagUrl: "https://flagcdn.com/w320/gn.png" },
+      { name: "Yemen", flagUrl: "https://flagcdn.com/w320/ye.png" },
+      { name: "Philippines", flagUrl: "https://flagcdn.com/w320/ph.png" },
+      { name: "Switzerland", flagUrl: "https://flagcdn.com/w320/ch.png" },
+      { name: "Finland", flagUrl: "https://flagcdn.com/w320/fi.png" },
+      { name: "Denmark", flagUrl: "https://flagcdn.com/w320/dk.png" },
+      { name: "Andorra", flagUrl: "https://flagcdn.com/w320/ad.png" },
+      { name: "Syria", flagUrl: "https://flagcdn.com/w320/sy.png" },
+      { name: "Mauritania", flagUrl: "https://flagcdn.com/w320/mr.png" },
+      { name: "Afghanistan", flagUrl: "https://flagcdn.com/w320/af.png" },
+      { name: "China", flagUrl: "https://flagcdn.com/w320/cn.png" },
+      { name: "Algeria", flagUrl: "https://flagcdn.com/w320/dz.png" },
+      { name: "Brunei", flagUrl: "https://flagcdn.com/w320/bn.png" },
+      { name: "Chad", flagUrl: "https://flagcdn.com/w320/td.png" },
+      { name: "Dominican Republic", flagUrl: "https://flagcdn.com/w320/do.png" },
+      { name: "Paraguay", flagUrl: "https://flagcdn.com/w320/py.png" },
+      { name: "Benin", flagUrl: "https://flagcdn.com/w320/bj.png" },
+      { name: "Egypt", flagUrl: "https://flagcdn.com/w320/eg.png" },
+      { name: "Singapore", flagUrl: "https://flagcdn.com/w320/sg.png" },
+      { name: "United States", flagUrl: "https://flagcdn.com/w320/us.png" },
+      { name: "Haiti", flagUrl: "https://flagcdn.com/w320/ht.png" },
+      { name: "Marshall Islands", flagUrl: "https://flagcdn.com/w320/mh.png" },
+      { name: "Hungary", flagUrl: "https://flagcdn.com/w320/hu.png" },
+      { name: "Romania", flagUrl: "https://flagcdn.com/w320/ro.png" },
+      { name: "Georgia", flagUrl: "https://flagcdn.com/w320/ge.png" },
+      { name: "Greece", flagUrl: "https://flagcdn.com/w320/gr.png" },
+      { name: "Zambia", flagUrl: "https://flagcdn.com/w320/zm.png" },
+      { name: "Botswana", flagUrl: "https://flagcdn.com/w320/bw.png" },
+      { name: "Guyana", flagUrl: "https://flagcdn.com/w320/gy.png" },
+      { name: "Iraq", flagUrl: "https://flagcdn.com/w320/iq.png" },
+      { name: "Libya", flagUrl: "https://flagcdn.com/w320/ly.png" },
+      { name: "Tanzania", flagUrl: "https://flagcdn.com/w320/tz.png" },
+      { name: "Seychelles", flagUrl: "https://flagcdn.com/w320/sc.png" },
+      { name: "Norway", flagUrl: "https://flagcdn.com/w320/no.png" },
+      { name: "Kosovo", flagUrl: "https://flagcdn.com/w320/xk.png" },
+      { name: "Lithuania", flagUrl: "https://flagcdn.com/w320/lt.png" },
+      { name: "Guinea-Bissau", flagUrl: "https://flagcdn.com/w320/gw.png" },
+      { name: "Mauritius", flagUrl: "https://flagcdn.com/w320/mu.png" },
+      { name: "South Sudan", flagUrl: "https://flagcdn.com/w320/ss.png" },
+      { name: "Slovakia", flagUrl: "https://flagcdn.com/w320/sk.png" },
+      { name: "Palestine", flagUrl: "https://flagcdn.com/w320/ps.png" },
+      { name: "Jamaica", flagUrl: "https://flagcdn.com/w320/jm.png" },
+      { name: "Cabo Verde", flagUrl: "https://flagcdn.com/w320/cv.png" },
+      { name: "Gabon", flagUrl: "https://flagcdn.com/w320/ga.png" },
+      { name: "Ukraine", flagUrl: "https://flagcdn.com/w320/ua.png" },
+      { name: "Belize", flagUrl: "https://flagcdn.com/w320/bz.png" },
+      { name: "Monaco", flagUrl: "https://flagcdn.com/w320/mc.png" },
+      { name: "Laos", flagUrl: "https://flagcdn.com/w320/la.png" },
+      { name: "Cyprus", flagUrl: "https://flagcdn.com/w320/cy.png" },
+      { name: "Mali", flagUrl: "https://flagcdn.com/w320/ml.png" },
+      { name: "Sudan", flagUrl: "https://flagcdn.com/w320/sd.png" },
+      { name: "Liechtenstein", flagUrl: "https://flagcdn.com/w320/li.png" },
+      { name: "Montenegro", flagUrl: "https://flagcdn.com/w320/me.png" },
+      { name: "Malaysia", flagUrl: "https://flagcdn.com/w320/my.png" },
+      { name: "North Korea", flagUrl: "https://flagcdn.com/w320/kp.png" },
+      { name: "Comoros", flagUrl: "https://flagcdn.com/w320/km.png" },
+      { name: "Nepal", flagUrl: "https://flagcdn.com/w320/np.png" },
+      { name: "Azerbaijan", flagUrl: "https://flagcdn.com/w320/az.png" },
+      { name: "Uganda", flagUrl: "https://flagcdn.com/w320/ug.png" },
+      { name: "Eritrea", flagUrl: "https://flagcdn.com/w320/er.png" },
+      { name: "Antigua and Barbuda", flagUrl: "https://flagcdn.com/w320/ag.png" },
+      { name: "Bangladesh", flagUrl: "https://flagcdn.com/w320/bd.png" },
+      { name: "Niger", flagUrl: "https://flagcdn.com/w320/ne.png" },
+      { name: "Myanmar", flagUrl: "https://flagcdn.com/w320/mm.png" },
+      { name: "Ghana", flagUrl: "https://flagcdn.com/w320/gh.png" },
+      { name: "Suriname", flagUrl: "https://flagcdn.com/w320/sr.png" },
+      { name: "Russia", flagUrl: "https://flagcdn.com/w320/ru.png" },
+      { name: "Burundi", flagUrl: "https://flagcdn.com/w320/bi.png" },
+      { name: "Pakistan", flagUrl: "https://flagcdn.com/w320/pk.png" },
+      { name: "Rwanda", flagUrl: "https://flagcdn.com/w320/rw.png" },
+      { name: "Croatia", flagUrl: "https://flagcdn.com/w320/hr.png" },
+      { name: "Bahamas", flagUrl: "https://flagcdn.com/w320/bs.png" },
+      { name: "Central African Republic", flagUrl: "https://flagcdn.com/w320/cf.png" },
+      { name: "Madagascar", flagUrl: "https://flagcdn.com/w320/mg.png" },
+      { name: "Democratic Republic of the Congo", flagUrl: "https://flagcdn.com/w320/cd.png" },
+      { name: "Senegal", flagUrl: "https://flagcdn.com/w320/sn.png" },
+      { name: "Palau", flagUrl: "https://flagcdn.com/w320/pw.png" },
+      { name: "Micronesia", flagUrl: "https://flagcdn.com/w320/fm.png" },
+      { name: "Israel", flagUrl: "https://flagcdn.com/w320/il.png" },
+      { name: "Estonia", flagUrl: "https://flagcdn.com/w320/ee.png" },
+      { name: "San Marino", flagUrl: "https://flagcdn.com/w320/sm.png" },
+      { name: "Ireland", flagUrl: "https://flagcdn.com/w320/ie.png" },
+      { name: "Togo", flagUrl: "https://flagcdn.com/w320/tg.png" },
+      { name: "Vietnam", flagUrl: "https://flagcdn.com/w320/vn.png" },
+      { name: "Turkmenistan", flagUrl: "https://flagcdn.com/w320/tm.png" },
+      { name: "South Korea", flagUrl: "https://flagcdn.com/w320/kr.png" },
+      { name: "Germany", flagUrl: "https://flagcdn.com/w320/de.png" },
+      { name: "Nigeria", flagUrl: "https://flagcdn.com/w320/ng.png" },
+      { name: "Tonga", flagUrl: "https://flagcdn.com/w320/to.png" },
+      { name: "Djibouti", flagUrl: "https://flagcdn.com/w320/dj.png" },
+      { name: "Lesotho", flagUrl: "https://flagcdn.com/w320/ls.png" },
+    ];
+    let remainingCountries = [...countries];
+    let currentCountryIndex;
+    let score = 0;
+    let highScore = localStorage.getItem("highScore") || 0;
+    let hintsRemaining;
+    let hardMode = false;
+    let timer;
 
-    <script>
-        const countries = [
-            { name: "Afghanistan", image: "https://flagcdn.com/w320/af.png" },
-            { name: "Albania", image: "https://flagcdn.com/w320/al.png" },
-            { name: "Algeria", image: "https://flagcdn.com/w320/dz.png" },
-            { name: "Andorra", image: "https://flagcdn.com/w320/ad.png" },
-            { name: "Angola", image: "https://flagcdn.com/w320/ao.png" },
-            { name: "Antigua and Barbuda", image: "https://flagcdn.com/w320/ag.png" },
-            { name: "Argentina", image: "https://flagcdn.com/w320/ar.png" },
-            { name: "Armenia", image: "https://flagcdn.com/w320/am.png" },
-            { name: "Australia", image: "https://flagcdn.com/w320/au.png" },
-            { name: "Austria", image: "https://flagcdn.com/w320/at.png" },
-            { name: "Azerbaijan", image: "https://flagcdn.com/w320/az.png" },
-            { name: "Bahamas", image: "https://flagcdn.com/w320/bs.png" },
-            { name: "Bahrain", image: "https://flagcdn.com/w320/bh.png" },
-            { name: "Bangladesh", image: "https://flagcdn.com/w320/bd.png" },
-            { name: "Barbados", image: "https://flagcdn.com/w320/bb.png" },
-            { name: "Belarus", image: "https://flagcdn.com/w320/by.png" },
-            { name: "Belgium", image: "https://flagcdn.com/w320/be.png" },
-            { name: "Belize", image: "https://flagcdn.com/w320/bz.png" },
-            { name: "Benin", image: "https://flagcdn.com/w320/bj.png" },
-            { name: "Bhutan", image: "https://flagcdn.com/w320/bt.png" },
-            { name: "Bolivia", image: "https://flagcdn.com/w320/bo.png" },
-            { name: "Bosnia and Herzegovina", image: "https://flagcdn.com/w320/ba.png" },
-            { name: "Botswana", image: "https://flagcdn.com/w320/bw.png" },
-            { name: "Brazil", image: "https://flagcdn.com/w320/br.png" },
-            { name: "Brunei", image: "https://flagcdn.com/w320/bn.png" },
-            { name: "Bulgaria", image: "https://flagcdn.com/w320/bg.png" },
-            { name: "Burkina Faso", image: "https://flagcdn.com/w320/bf.png" },
-            { name: "Burundi", image: "https://flagcdn.com/w320/bi.png" },
-            { name: "Cabo Verde", image: "https://flagcdn.com/w320/cv.png" },
-            { name: "Cambodia", image: "https://flagcdn.com/w320/kh.png" },
-            { name: "Cameroon", image: "https://flagcdn.com/w320/cm.png" },
-            { name: "Canada", image: "https://flagcdn.com/w320/ca.png" },
-            { name: "Central African Republic", image: "https://flagcdn.com/w320/cf.png" },
-            { name: "Chad", image: "https://flagcdn.com/w320/td.png" },
-            { name: "Chile", image: "https://flagcdn.com/w320/cl.png" },
-            { name: "China", image: "https://flagcdn.com/w320/cn.png" },
-            { name: "Colombia", image: "https://flagcdn.com/w320/co.png" },
-            { name: "Comoros", image: "https://flagcdn.com/w320/km.png" },
-            { name: "Congo", image: "https://flagcdn.com/w320/cg.png" },
-            { name: "Congo, Democratic Republic of the", image: "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b1/Flag_of_the_President_of_the_Democratic_Republic_of_the_Congo_%28type_2%29.svg/1920px-Flag_of_the_President_of_the_Democratic_Republic_of_the_Congo_%28type_2%29.svg.png" },
-            { name: "Costa Rica", image: "https://flagcdn.com/w320/cr.png" },
-            { name: "Croatia", image: "https://flagcdn.com/w320/hr.png" },
-            { name: "Cuba", image: "https://flagcdn.com/w320/cu.png" },
-            { name: "Cyprus", image: "https://flagcdn.com/w320/cy.png" },
-            { name: "Czech Republic", image: "https://flagcdn.com/w320/cz.png" },
-            { name: "Denmark", image: "https://flagcdn.com/w320/dk.png" },
-            { name: "Djibouti", image: "https://flagcdn.com/w320/dj.png" },
-            { name: "Dominica", image: "https://flagcdn.com/w320/dm.png" },
-            { name: "Dominican Republic", image: "https://flagcdn.com/w320/do.png" },
-            { name: "Ecuador", image: "https://flagcdn.com/w320/ec.png" },
-            { name: "Egypt", image: "https://flagcdn.com/w320/eg.png" },
-            { name: "El Salvador", image: "https://flagcdn.com/w320/sv.png" },
-            { name: "Equatorial Guinea", image: "https://flagcdn.com/w320/gq.png" },
-            { name: "Eritrea", image: "https://flagcdn.com/w320/er.png" },
-            { name: "Estonia", image: "https://flagcdn.com/w320/ee.png" },
-            { name: "Eswatini", image: "https://flagcdn.com/w320/sz.png" },
-            { name: "Ethiopia", image: "https://flagcdn.com/w320/et.png" },
-            { name: "Fiji", image: "https://flagcdn.com/w320/fj.png" },
-            { name: "Finland", image: "https://flagcdn.com/w320/fi.png" },
-            { name: "France", image: "https://flagcdn.com/w320/fr.png" },
-            { name: "Gabon", image: "https://flagcdn.com/w320/ga.png" },
-            { name: "Gambia", image: "https://flagcdn.com/w320/gm.png" },
-            { name: "Georgia", image: "https://flagcdn.com/w320/ge.png" },
-            { name: "Germany", image: "https://flagcdn.com/w320/de.png" },
-            { name: "Ghana", image: "https://flagcdn.com/w320/gh.png" },
-            { name: "Greece", image: "https://flagcdn.com/w320/gr.png" },
-            { name: "Grenada", image: "https://flagcdn.com/w320/gd.png" },
-            { name: "Guatemala", image: "https://flagcdn.com/w320/gt.png" },
-            { name: "Guinea", image: "https://flagcdn.com/w320/gn.png" },
-            { name: "Guinea-Bissau", image: "https://flagcdn.com/w320/gw.png" },
-            { name: "Guyana", image: "https://flagcdn.com/w320/gy.png" },
-            { name: "Haiti", image: "https://flagcdn.com/w320/ht.png" },
-            { name: "Honduras", image: "https://flagcdn.com/w320/hn.png" },
-            { name: "Hungary", image: "https://flagcdn.com/w320/hu.png" },
-            { name: "Iceland", image: "https://flagcdn.com/w320/is.png" },
-            { name: "India", image: "https://flagcdn.com/w320/in.png" },
-            { name: "Indonesia", image: "https://flagcdn.com/w320/id.png" },
-            { name: "Iran", image: "https://flagcdn.com/w320/ir.png" },
-            { name: "Iraq", image: "https://flagcdn.com/w320/iq.png" },
-            { name: "Ireland", image: "https://flagcdn.com/w320/ie.png" },
-            { name: "Israel", image: "https://flagcdn.com/w320/il.png" },
-            { name: "Italy", image: "https://flagcdn.com/w320/it.png" },
-            { name: "Jamaica", image: "https://flagcdn.com/w320/jm.png" },
-            { name: "Japan", image: "https://flagcdn.com/w320/jp.png" },
-            { name: "Jordan", image: "https://flagcdn.com/w320/jo.png" },
-            { name: "Kazakhstan", image: "https://flagcdn.com/w320/kz.png" },
-            { name: "Kenya", image: "https://flagcdn.com/w320/ke.png" },
-            { name: "Kiribati", image: "https://flagcdn.com/w320/ki.png" },
-            { name: "Kuwait", image: "https://flagcdn.com/w320/kw.png" },
-            { name: "Kyrgyzstan", image: "https://flagcdn.com/w320/kg.png" },
-            { name: "Laos", image: "https://flagcdn.com/w320/la.png" },
-            { name: "Latvia", image: "https://flagcdn.com/w320/lv.png" },
-            { name: "Lebanon", image: "https://flagcdn.com/w320/lb.png" },
-            { name: "Lesotho", image: "https://flagcdn.com/w320/ls.png" },
-            { name: "Liberia", image: "https://flagcdn.com/w320/lr.png" },
-            { name: "Libya", image: "https://flagcdn.com/w320/ly.png" },
-            { name: "Liechtenstein", image: "https://flagcdn.com/w320/li.png" },
-            { name: "Lithuania", image: "https://flagcdn.com/w320/lt.png" },
-            { name: "Luxembourg", image: "https://flagcdn.com/w320/lu.png" },
-            { name: "Madagascar", image: "https://flagcdn.com/w320/mg.png" },
-            { name: "Malawi", image: "https://flagcdn.com/w320/mw.png" },
-            { name: "Malaysia", image: "https://flagcdn.com/w320/my.png" },
-            { name: "Maldives", image: "https://flagcdn.com/w320/mv.png" },
-            { name: "Mali", image: "https://flagcdn.com/w320/ml.png" },
-            { name: "Malta", image: "https://flagcdn.com/w320/mt.png" },
-            { name: "Marshall Islands", image: "https://flagcdn.com/w320/mh.png" },
-            { name: "Mauritania", image: "https://flagcdn.com/w320/mr.png" },
-            { name: "Mauritius", image: "https://flagcdn.com/w320/mu.png" },
-            { name: "Mexico", image: "https://flagcdn.com/w320/mx.png" },
-            { name: "Micronesia", image: "https://flagcdn.com/w320/fm.png" },
-            { name: "Moldova", image: "https://flagcdn.com/w320/md.png" },
-            { name: "Monaco", image: "https://flagcdn.com/w320/mc.png" },
-            { name: "Mongolia", image: "https://flagcdn.com/w320/mn.png" },
-            { name: "Montenegro", image: "https://flagcdn.com/w320/me.png" },
-            { name: "Morocco", image: "https://flagcdn.com/w320/ma.png" },
-            { name: "Mozambique", image: "https://flagcdn.com/w320/mz.png" },
-            { name: "Myanmar", image: "https://flagcdn.com/w320/mm.png" },
-            { name: "Namibia", image: "https://flagcdn.com/w320/na.png" },
-            { name: "Nauru", image: "https://flagcdn.com/w320/nr.png" },
-            { name: "Nepal", image: "https://flagcdn.com/w320/np.png" },
-            { name: "Netherlands", image: "https://flagcdn.com/w320/nl.png" },
-            { name: "New Zealand", image: "https://flagcdn.com/w320/nz.png" },
-            { name: "Nicaragua", image: "https://flagcdn.com/w320/ni.png" },
-            { name: "Niger", image: "https://flagcdn.com/w320/ne.png" },
-            { name: "Nigeria", image: "https://flagcdn.com/w320/ng.png" },
-            { name: "North Macedonia", image: "https://flagcdn.com/w320/mk.png" },
-            { name: "Norway", image: "https://flagcdn.com/w320/no.png" },
-            { name: "Oman", image: "https://flagcdn.com/w320/om.png" },
-            { name: "Pakistan", image: "https://flagcdn.com/w320/pk.png" },
-            { name: "Palau", image: "https://flagcdn.com/w320/pw.png" },
-            { name: "Palestine", image: "https://flagcdn.com/w320/ps.png" },
-            { name: "Panama", image: "https://flagcdn.com/w320/pa.png" },
-            { name: "Papua New Guinea", image: "https://flagcdn.com/w320/pg.png" },
-            { name: "Paraguay", image: "https://flagcdn.com/w320/py.png" },
-            { name: "Peru", image: "https://flagcdn.com/w320/pe.png" },
-            { name: "Philippines", image: "https://flagcdn.com/w320/ph.png" },
-            { name: "Poland", image: "https://flagcdn.com/w320/pl.png" },
-            { name: "Portugal", image: "https://flagcdn.com/w320/pt.png" },
-            { name: "Qatar", image: "https://flagcdn.com/w320/qa.png" },
-            { name: "Romania", image: "https://flagcdn.com/w320/ro.png" },
-            { name: "Russia", image: "https://flagcdn.com/w320/ru.png" },
-            { name: "Rwanda", image: "https://flagcdn.com/w320/rw.png" },
-            { name: "Saint Kitts and Nevis", image: "https://flagcdn.com/w320/kn.png" },
-            { name: "Saint Lucia", image: "https://flagcdn.com/w320/lc.png" },
-            { name: "Saint Vincent and the Grenadines", image: "https://flagcdn.com/w320/vc.png" },
-            { name: "Samoa", image: "https://flagcdn.com/w320/ws.png" },
-            { name: "San Marino", image: "https://flagcdn.com/w320/sm.png" },
-            { name: "Sao Tome and Principe", image: "https://flagcdn.com/w320/st.png" },
-            { name: "Saudi Arabia", image: "https://flagcdn.com/w320/sa.png" },
-            { name: "Senegal", image: "https://flagcdn.com/w320/sn.png" },
-            { name: "Serbia", image: "https://flagcdn.com/w320/rs.png" },
-            { name: "Seychelles", image: "https://flagcdn.com/w320/sc.png" },
-            { name: "Sierra Leone", image: "https://flagcdn.com/w320/sl.png" },
-            { name: "Singapore", image: "https://flagcdn.com/w320/sg.png" },
-            { name: "Slovakia", image: "https://flagcdn.com/w320/sk.png" },
-            { name: "Slovenia", image: "https://flagcdn.com/w320/si.png" },
-            { name: "Solomon Islands", image: "https://flagcdn.com/w320/sb.png" },
-            { name: "Somalia", image: "https://flagcdn.com/w320/so.png" },
-            { name: "South Africa", image: "https://flagcdn.com/w320/za.png" },
-            { name: "South Korea", image: "https://flagcdn.com/w320/kr.png" },
-            { name: "South Sudan", image: "https://flagcdn.com/w320/ss.png" },
-            { name: "Spain", image: "https://flagcdn.com/w320/es.png" },
-            { name: "Sri Lanka", image: "https://flagcdn.com/w320/lk.png" },
-            { name: "Sudan", image: "https://flagcdn.com/w320/sd.png" },
-            { name: "Suriname", image: "https://flagcdn.com/w320/sr.png" },
-            { name: "Sweden", image: "https://flagcdn.com/w320/se.png" },
-            { name: "Switzerland", image: "https://flagcdn.com/w320/ch.png" },
-            { name: "Syria", image: "https://flagcdn.com/w320/sy.png" },
-            { name: "Tajikistan", image: "https://flagcdn.com/w320/tj.png" },
-            { name: "Tanzania", image: "https://flagcdn.com/w320/tz.png" },
-            { name: "Thailand", image: "https://flagcdn.com/w320/th.png" },
-            { name: "Togo", image: "https://flagcdn.com/w320/tg.png" },
-            { name: "Tonga", image: "https://flagcdn.com/w320/to.png" },
-            { name: "Trinidad and Tobago", image: "https://flagcdn.com/w320/tt.png" },
-            { name: "Tunisia", image: "https://flagcdn.com/w320/tn.png" },
-            { name: "Turkey", image: "https://flagcdn.com/w320/tr.png" },
-            { name: "Turkmenistan", image: "https://flagcdn.com/w320/tm.png" },
-            { name: "Tuvalu", image: "https://flagcdn.com/w320/tv.png" },
-            { name: "Uganda", image: "https://flagcdn.com/w320/ug.png" },
-            { name: "Ukraine", image: "https://flagcdn.com/w320/ua.png" },
-            { name: "United Arab Emirates", image: "https://flagcdn.com/w320/ae.png" },
-            { name: "United Kingdom", image: "https://flagcdn.com/w320/gb.png" },
-            { name: "United States", image: "https://flagcdn.com/w320/us.png" },
-            { name: "Uruguay", image: "https://flagcdn.com/w320/uy.png" },
-            { name: "Uzbekistan", image: "https://flagcdn.com/w320/uz.png" },
-            { name: "Vanuatu", image: "https://flagcdn.com/w320/vu.png" },
-            { name: "Vatican City", image: "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b3/Flag_of_Vatican_City_%282023%E2%80%93present%29.svg/170px-Flag_of_Vatican_City_%282023%E2%80%93present%29.svg.png" },
-            { name: "Venezuela", image: "https://flagcdn.com/w320/ve.png" },
-            { name: "Vietnam", image: "https://flagcdn.com/w320/vn.png" },
-            { name: "Yemen", image: "https://flagcdn.com/w320/ye.png" },
-            { name: "Zambia", image: "https://flagcdn.com/w320/zm.png" },
-            { name: "Zimbabwe", image: "https://flagcdn.com/w320/zw.png" }
-            { name: "North Korea", image: "https://flagcdn.com/w320/kp.png" },
-	    { name: "Taiwan", image: "https://flagcdn.com/w320/tw.png" },
-	    { name: "Kosovo", image: "https://flagcdn.com/w320/xk.png" },
-	    { name: "Timor-Leste", image: "https://flagcdn.com/w320/tl.png" },
-	    { name: "Ivory Coast", image: "https://flagcdn.com/16x12/ci.png" }
-        ];
+    document.getElementById("high-score").innerText = highScore;
 
-        let currentCountry, score = 0, highScore = 0;
-        let usedCountries = new Set();
+    function startEasyMode() {
+      hardMode = false;
+      hintsRemaining = 5;
+      document.getElementById("welcome-container").style.display = "none";
+      document.getElementById("quiz-container").style.display = "block";
+      document.getElementById("hint-button").style.display = "block";
+      startGame();
+    }
 
-        function setNextCountry() {
-            if (usedCountries.size === countries.length) {
-                document.getElementById('claimPrize').style.display = 'block';
-                return;
-            }
+    function startHardMode() {
+      hardMode = true;
+      hintsRemaining = 0;
+      document.getElementById("welcome-container").style.display = "none";
+      document.getElementById("quiz-container").style.display = "block";
+      document.getElementById("hint-button").style.display = "none";
+      startGame();
+    }
 
-            let randomIndex;
-            do {
-                randomIndex = Math.floor(Math.random() * countries.length);
-            } while (usedCountries.has(randomIndex));
-            usedCountries.add(randomIndex);
+    function startGame() {
+      if (remainingCountries.length === 0) {
+        remainingCountries = [...countries];
+      }
+      currentCountryIndex = Math.floor(Math.random() * remainingCountries.length);
+      const currentCountry = remainingCountries[currentCountryIndex];
+      document.getElementById("flag").src = currentCountry.flagUrl;
+      const optionButtons = document.querySelectorAll(".option-button");
+      optionButtons.forEach(button => {
+        button.style.display = 'block';
+        button.className = 'option-button';
+        button.disabled = false;
+        button.style.fontSize = '18px';
+        button.style.whiteSpace = 'normal'; // Allow buttons to display full country names
+      });
+      let options = generateOptions(currentCountry);
+      optionButtons.forEach((button, index) => {
+        button.innerText = countries[options[index]].name;
+        button.style.fontSize = '18px'; // Reset font size to ensure it fits within the button
+      });
+      updateProgressBar();
+      updateHintsDisplay();
 
-            currentCountry = countries[randomIndex];
-            document.getElementById('flagImage').src = currentCountry.image;
+      if (hardMode) {
+        startTimer();
+      }
+    }
 
-            const options = getOptions(randomIndex);
-            const buttons = document.querySelectorAll('.options button');
-            buttons.forEach((button, index) => {
-                button.innerText = options[index].name;
-                button.onclick = () => checkAnswer(options[index].name, buttons);
-            });
-
-            document.getElementById('feedback').innerText = '';
+    function generateOptions(correctCountry) {
+      let options = [countries.indexOf(correctCountry)];
+      while (options.length < 3) {
+        let randomIndex = Math.floor(Math.random() * countries.length);
+        if (!options.includes(randomIndex)) {
+          options.push(randomIndex);
         }
+      }
+      return options.sort(() => Math.random() - 0.5);
+    }
 
-        function getOptions(correctIndex) {
-            const options = [countries[correctIndex]];
-            while (options.length < 3) {
-                const randomIndex = Math.floor(Math.random() * countries.length);
-                if (!options.includes(countries[randomIndex]) && !usedCountries.has(randomIndex)) {
-                    options.push(countries[randomIndex]);
-                }
-            }
-            return shuffle(options);
+    function startTimer() {
+      let timeLeft = 3;
+      document.getElementById("quiz-container").style.animation = "pulseRed 1s infinite";
+      timer = setInterval(() => {
+        if (timeLeft > 0) {
+          timeLeft--;
+        } else {
+          clearInterval(timer);
+          document.getElementById("quiz-container").style.animation = "none";
+          markAsIncorrectDueToTimeout();
         }
+      }, 1000);
+    }
 
-        function shuffle(array) {
-            for (let i = array.length - 1; i > 0; i--) {
-                const j = Math.floor(Math.random() * (i + 1));
-                [array[i], array[j]] = [array[j], array[i]];
-            }
-            return array;
+    function markAsIncorrectDueToTimeout() {
+      const optionButtons = document.querySelectorAll(".option-button");
+      optionButtons.forEach(button => button.disabled = true);
+      const correctCountryName = remainingCountries[currentCountryIndex].name;
+      const correctIndex = Array.from(optionButtons).findIndex(button => button.innerText === correctCountryName);
+      if (correctIndex !== -1) {
+        optionButtons[correctIndex].classList.add("correct");
+      }
+      disableAllButtonsExceptResetAndHome();
+    }
+
+    function checkAnswer(selectedIndex) {
+      clearInterval(timer);
+      document.getElementById("quiz-container").style.animation = "none";
+      const optionButtons = document.querySelectorAll(".option-button");
+      optionButtons.forEach(button => button.disabled = true);
+      const correctCountryName = remainingCountries[currentCountryIndex].name;
+      const correctIndex = Array.from(optionButtons).findIndex(button => button.innerText === correctCountryName);
+      if (optionButtons[selectedIndex].innerText === correctCountryName) {
+        optionButtons[selectedIndex].classList.add("correct");
+        score++;
+        document.getElementById("counter").innerText = `${score}/197`;
+        remainingCountries.splice(currentCountryIndex, 1);
+        updateProgressBar();
+        if (score > highScore) {
+          highScore = score;
+          localStorage.setItem("highScore", highScore);
+          document.getElementById("high-score").innerText = highScore;
         }
-
-        function checkAnswer(selectedName, buttons) {
-            const isCorrect = selectedName === currentCountry.name;
-
-            if (isCorrect) {
-                score++;
-                document.getElementById('score').innerText = score;
-                if (score > highScore) {
-                    highScore = score;
-                    document.getElementById('highScoreValue').innerText = highScore;
-                }
-                setNextCountry();
-            } else {
-                document.getElementById('feedback').innerText = `Wrong! The correct answer was ${currentCountry.name}.`;
-                highlightCorrectAnswer(buttons);
-                document.getElementById('resetButton').style.display = 'inline';
-            }
+        setTimeout(startGame, 1000);
+      } else {
+        optionButtons[selectedIndex].classList.add("incorrect");
+        optionButtons[correctIndex].classList.add("correct");
+        if (hardMode) {
+          disableAllButtonsExceptResetAndHome();
+        } else {
+          setTimeout(() => {
+            startGame();
+          }, 1000);
         }
+      }
+    }
 
-        function highlightCorrectAnswer(buttons) {
-            buttons.forEach(button => {
-                if (button.innerText === currentCountry.name) {
-                    button.classList.add('correct');
-                } else {
-                    button.classList.add('incorrect');
-                }
-                button.disabled = true; // Disable buttons after wrong answer
-            });
+    function disableAllButtonsExceptResetAndHome() {
+      const buttons = document.querySelectorAll("button");
+      buttons.forEach(button => {
+        if (button.id !== "reset-button" && button.id !== "home-button") {
+          button.disabled = true;
         }
+      });
+      document.getElementById("reset-button").style.display = "block";
+    }
 
-        function resetGame() {
-            score = 0;
-            document.getElementById('score').innerText = score;
-            document.getElementById('resetButton').style.display = 'none';
-            document.getElementById('claimPrize').style.display = 'none';
-            usedCountries.clear();
-            const buttons = document.querySelectorAll('.options button');
-            buttons.forEach(button => {
-                button.classList.remove('correct', 'incorrect');
-                button.disabled = false; // Re-enable buttons
-            });
-            setNextCountry();
+    function resetGame() {
+      clearInterval(timer);
+      score = 0;
+      remainingCountries = [...countries];
+      document.getElementById("counter").innerText = `${score}/197`;
+      document.getElementById("reset-button").style.display = "none";
+      document.getElementById("claim-prize-button").style.display = "none";
+      document.getElementById("play-again-button").style.display = "none";
+      document.getElementById("switch-mode-button").style.display = "none";
+      updateProgressBar();
+      startGame();
+    }
+
+    function claimPrize() {
+      window.location.href = "https://www.youtube.com/watch?v=dQw4w9WgXcQ";
+    }
+
+    function playAgain() {
+      resetGame();
+    }
+
+    function switchToHardMode() {
+      startHardMode();
+    }
+
+    function goHome() {
+      clearInterval(timer);
+      document.getElementById("quiz-container").style.display = "none";
+      document.getElementById("welcome-container").style.display = "block";
+      const modeButtons = document.querySelectorAll(".mode-button");
+      modeButtons.forEach(button => button.disabled = false);
+      resetGame();
+    }
+
+    function updateProgressBar() {
+      let progressPercentage = (score / 197) * 100;
+      document.getElementById("progress-bar").style.width = progressPercentage + "%";
+    }
+
+    function useHint() {
+      if (hintsRemaining > 0) {
+        const optionButtons = document.querySelectorAll(".option-button");
+        const incorrectOptions = Array.from(optionButtons).filter(button => button.innerText !== remainingCountries[currentCountryIndex].name);
+        if (incorrectOptions.length > 0) {
+          const buttonToDisable = incorrectOptions[Math.floor(Math.random() * incorrectOptions.length)];
+          buttonToDisable.style.display = 'none';
+          hintsRemaining--;
+          updateHintsDisplay();
         }
+      }
+    }
 
-        // Initialize the first country on page load
-        window.onload = setNextCountry;
-    </script>
+    function updateHintsDisplay() {
+      document.getElementById("hints-remaining").innerText = hintsRemaining;
+    }
+  </script>
 </body>
 </html>
