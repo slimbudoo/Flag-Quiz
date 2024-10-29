@@ -117,9 +117,9 @@
       transition: width 0.5s;
     }
     @keyframes pulseRed {
-      0% { box-shadow: 0 0 15px rgba(244, 67, 54, 0.2); }
-      50% { box-shadow: 0 0 30px rgba(244, 67, 54, 0.5); }
-      100% { box-shadow: 0 0 15px rgba(244, 67, 54, 0.2); }
+      0% { box-shadow: 0 0 25px rgba(255, 0, 0, 0.4); }
+      50% { box-shadow: 0 0 50px rgba(255, 0, 0, 0.8); }
+      100% { box-shadow: 0 0 25px rgba(255, 0, 0, 0.4); }
     }
   </style>
 </head>
@@ -366,6 +366,8 @@
       document.getElementById("welcome-container").style.display = "none";
       document.getElementById("quiz-container").style.display = "block";
       document.getElementById("hint-button").style.display = "block";
+      document.getElementById("quiz-container").style.animation = "none";
+      clearInterval(timer);
       startGame();
     }
 
@@ -418,6 +420,7 @@
     }
 
     function startTimer() {
+      if (!hardMode) return;
       let timeLeft = 3;
       document.getElementById("quiz-container").style.animation = "pulseRed 1s infinite";
       timer = setInterval(() => {
@@ -446,7 +449,9 @@
       clearInterval(timer);
       document.getElementById("quiz-container").style.animation = "none";
       const optionButtons = document.querySelectorAll(".option-button");
-      optionButtons.forEach(button => button.disabled = true);
+      optionButtons.forEach(button => {
+        button.disabled = true;
+      });
       const correctCountryName = remainingCountries[currentCountryIndex].name;
       const correctIndex = Array.from(optionButtons).findIndex(button => button.innerText === correctCountryName);
       if (optionButtons[selectedIndex].innerText === correctCountryName) {
